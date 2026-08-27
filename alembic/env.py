@@ -10,7 +10,7 @@ from alembic import context
 # access to the values within the .ini file in use.
 config = context.config
 database_url = (
-    f"postgresql://{settings.database_username}:"
+    f"postgresql+psycopg2://{settings.database_username}:"
     f"{settings.database_password}@"
     f"{settings.database_hostname}:"
     f"{settings.database_port}/"
