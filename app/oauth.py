@@ -16,7 +16,7 @@ def create_access_token(id: int):
     payload = {"user_id" : id}
     time_expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     payload["exp"] = time_expire
-    token = jwt.encode(payload, SECRET_KEY , algorithm=ALGORITHM )
+    token = jwt.encode(payload, SECRET_KEY , algorithm=ALGORITHM)
     return token
 
 def verify_access_token(token: str, credentails_exception):
@@ -36,7 +36,5 @@ def verify_access_token(token: str, credentails_exception):
     
 def get_current_user(token: str = Depends(oauth2_schema)):
     credentails_exception = HTTPException(status_code=401, detail="Could not validate credentails", headers={"WWW-Authenticate": "Bearer"})
-
     token_data = verify_access_token(token, credentails_exception)
-
     return token_data.id
