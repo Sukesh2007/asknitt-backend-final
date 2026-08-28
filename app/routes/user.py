@@ -92,48 +92,50 @@ def following(user_id = Depends(oauth.get_current_user), db: Session = Depends(d
         a.append(item)
     return a
 
-
 @router.get("/user/discover", response_model=List[schema.DiscoverUser])
 def discover_users(
     user_id=Depends(oauth.get_current_user),
     db: Session = Depends(database.get_db)
 ):
-    users = db.query(models.User).filter(models.User.id != user_id).all()
+    users = db.query(models.User).filter(
+        models.User.id != user_id
+    ).all()
+
     result = []
+
     for user in users:
-        relation = db.query(models.Follow).filter(
-            (
-                (models.Follow.requester_id == user_id) &
-                (models.Follow.receiver_id == user.id)
-            ) |
-            (
-                (models.Follow.requester_id == user.id) &
-                (models.Follow.receiver_id == user_id)
-            )
+
+        # Check whether the current user already follows this user
+        my_relation = db.query(models.Follow).filter(
+            models.Follow.requester_id == user_id,
+            models.Follow.receiver_id == user.id
         ).first()
-        if relation is None:
-            result.append(
-                schema.DiscoverUser(
-                    id=user.id,
-                    name=user.name,
-                    rollno=user.rollno,
-                    department=user.department,
-                    follow_status="none"
-                )
+
+        # Already following -> don't show
+        if my_relation is not None:
+            continue
+
+        # Check whether the other user follows the current user
+        their_relation = db.query(models.Follow).filter(
+            models.Follow.requester_id == user.id,
+            models.Follow.receiver_id == user_id
+        ).first()
+
+        if their_relation is not None:
+            follow_status = "followed_by"
+        else:
+            follow_status = "none"
+
+        result.append(
+            schema.DiscoverUser(
+                id=user.id,
+                name=user.name,
+                rollno=user.rollno,
+                department=user.department,
+                follow_status=follow_status
             )
-        elif (
-            relation.requester_id == user_id and
-            relation.status == "pending"
-        ):
-            result.append(
-                schema.DiscoverUser(
-                    id=user.id,
-                    name=user.name,
-                    rollno=user.rollno,
-                    department=user.department,
-                    follow_status="pending"
-                )
-            )
+        )
+
     return result
 
 @router.get("/user/requests", response_model=List[schema.Register])
