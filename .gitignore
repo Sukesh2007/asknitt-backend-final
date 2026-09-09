@@ -7,3 +7,4 @@ __pycache__/
 *.log
 nginx
 gunicorn.service
+docker-compose.yml
