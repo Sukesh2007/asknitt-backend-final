@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional
 
@@ -85,7 +85,10 @@ class Questiondb(BaseModel):
     created_at: datetime
     isSolved: bool
     owner: Optional[Register] = None
-    attachment: list[AttachmentResponse] = []
+    attachment: list[AttachmentResponse] = Field(
+        default_factory=list,
+        validation_alias="attachments"
+    )
 
     class Config: 
         from_attributes=True
