@@ -29,17 +29,6 @@ class Question(BaseModel):
     question: str
     tags: list
 
-class Questiondb(BaseModel):
-    id: int
-    question: str
-    tags: list
-    created_at: datetime
-    isSolved: bool
-    owner: Optional[Register] = None
-
-    class Config: 
-        from_attributes=True
-
 class Answerdb(BaseModel):
     id: int
     answer: str
@@ -58,13 +47,6 @@ class Answer(BaseModel):
 class Votes(BaseModel):
     answer_id: int
     vote_dir: int
-
-class UserQuestions(BaseModel):
-    id: int
-    name: str
-    rollno: str
-    department: str
-    questions: list[Questiondb]
 
     class Config:
         form_attributes=True
@@ -85,3 +67,43 @@ class DiscoverUser(BaseModel):
     class Config: 
         from_attributes=True
 
+class AttachmentResponse(BaseModel):
+    id: int
+    question_id: int
+    file_name: str
+    file_type: str
+    file_size: int
+    storage_path: str
+
+    class Config:
+        from_attributes = True
+
+class Questiondb(BaseModel):
+    id: int
+    question: str
+    tags: list
+    created_at: datetime
+    isSolved: bool
+    owner: Optional[Register] = None
+    attachment: list[AttachmentResponse] = []
+
+    class Config: 
+        from_attributes=True
+
+class UserQuestions(BaseModel):
+    id: int
+    name: str
+    rollno: str
+    department: str
+    questions: list[Questiondb]
+
+class AttachmentAccessResponse(BaseModel):
+    id: int
+    question_id: int
+    file_name: str
+    file_type: str
+    file_size: int
+    url: str
+
+    class Config:
+        from_attributes = True

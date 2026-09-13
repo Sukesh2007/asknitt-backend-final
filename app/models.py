@@ -51,6 +51,12 @@ class Question(Base):
         back_populates="questions"
     )
 
+    attachments = relationship(
+        "Attachment",
+        back_populates="question",
+        cascade="all, delete-orphan"
+    )
+
 class Answer(Base):
     __tablename__ = "answers"
 
@@ -138,4 +144,25 @@ class Follow(Base):
     receiver = relationship(
         "User",
         foreign_keys=[receiver_id]
+    )
+
+class Attachment(Base):
+    __tablename__ = "attachments"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+
+    question_id = Column(
+        Integer,
+        ForeignKey("questions.id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    file_name = Column(String, nullable=False)
+    file_type = Column(String, nullable=False)
+    file_size = Column(Integer, nullable=False)
+    storage_path = Column(String, nullable=False)
+
+    question = relationship(
+        "Question",
+        back_populates="attachments"
     )

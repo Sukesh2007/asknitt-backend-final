@@ -7,7 +7,7 @@ from urllib.parse import quote_plus
 
 password = quote_plus(settings.database_password)
 
-DATABASE_URL = f"postgresql+psycopg2://{settings.database_username}:{password}@{settings.database_hostname}/{settings.database_name}"
+DATABASE_URL = f"postgresql+psycopg2://{settings.database_username}:{password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}"
 
 engine = create_engine(DATABASE_URL)
 

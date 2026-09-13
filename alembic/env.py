@@ -5,13 +5,16 @@ from sqlalchemy import pool
 from app.models import Base
 from app.config import settings
 from alembic import context
+from urllib.parse import quote_plus
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+password = quote_plus(settings.database_password)
+
 database_url = (
     f"postgresql+psycopg2://{settings.database_username}:"
-    f"{settings.database_password}@"
+    f"{password}@"
     f"{settings.database_hostname}:"
     f"{settings.database_port}/"
     f"{settings.database_name}"
